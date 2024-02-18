@@ -1,8 +1,9 @@
 use piston_window::{Context, G2d, Glyphs, math};
 use crate::render_engine::{Object, ObjectTypes};
+use crate::render_engine::ObjectTypes::Text;
 
 pub struct ObjectInventory {
-    objects: Vec<ObjectTypes>
+    pub(crate) objects: Vec<ObjectTypes>
 }
 
 impl ObjectInventory {
@@ -26,6 +27,10 @@ impl ObjectInventory {
         for object in &mut self.objects {
             object.step(sim_dt);
         }
+    }
+
+    pub fn get(&mut self, at: usize)  -> &mut ObjectTypes {
+        return &mut self.objects[at];
     }
 }
 

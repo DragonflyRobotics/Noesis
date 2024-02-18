@@ -1,12 +1,15 @@
 extern crate quantx;
 
 extern crate piston_window;
+
+use quantx::chrono_manager::Time;
+use std::{thread, time};
+use std::time as stdtime;
 use piston_window::*;
 use quantx::chrono_manager::ObjectInventory;
 
 use crate::quantx::render_engine::{Object, ObjectTypes};
 use crate::quantx::render_engine::{Box, Circle, Text};
-use crate::quantx::chrono_manager::Time;
 
 
 fn main() {
@@ -36,24 +39,21 @@ fn main() {
         radius: 100.0,
         color: [1.0, 0.0, 0.0, 1.0]
     };
-    let mut text1 = Text {
-        x: 10.0,
-        y: 100.0,
-        text: String::from("Hello World"),
-        color: [0.0, 0.0, 0.0, 1.0],
-        size: 32,
-    };
     let mut objects: ObjectInventory = ObjectInventory::new();
     objects.add_object(ObjectTypes::Box(box1));
     objects.add_object(ObjectTypes::Circle(circle1));
-    objects.add_object(ObjectTypes::Text(text1));
-    let mut time = Time::new(1.0, objects);
+    let mut time = Time::new(1.0, objects, 640.0, 480.0);
+    let mut tic = stdtime::Instant::now();
     while let Some(event) = window.next() {
         window.draw_2d(&event, |context, graphics, _device| {
             clear([1.0; 4], graphics);
             time.objects.draw(&context, graphics, &mut glyphs);
             glyphs.factory.encoder.flush(_device);
         });
-        time.step(0.1);
+        if (tic.elapsed() >= stdtime::Duration::from_millis(1)) {
+            time.step(0.001);
+            tic = stdtime::Instant::now();
+        }
+        println!("{:?}", tic.elapsed());
     }
 }

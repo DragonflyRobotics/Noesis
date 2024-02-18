@@ -10,7 +10,7 @@ pub struct Box {
 
 impl Box {
     pub fn step(&mut self, dt: f64) {
-        self.x += 1.0 * dt;
+        self.x += 10.0 * dt;
         self.y += 0.0 * dt;
     }
 }

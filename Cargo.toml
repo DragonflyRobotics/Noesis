@@ -1,0 +1,19 @@
+[package]
+name = "QuantX"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+name="quantx"
+path="src/lib/lib.rs"
+
+[[bin]]
+name="quantx_bin"
+path="src/bin/main.rs"
+
+[dependencies]
+piston_window = "*"
+find_folder = "*"
+

@@ -1,4 +1,4 @@
-use piston_window::{G2d, math};
+use piston_window::{Context, G2d, Glyphs, math};
 use crate::render_engine::{Object, ObjectTypes};
 
 pub struct ObjectInventory {
@@ -16,9 +16,9 @@ impl ObjectInventory {
         self.objects.push(object);
     }
 
-    pub fn draw(&self, transform: &math::Matrix2d, graphics: &mut G2d) {
+    pub fn draw(&self, context: &Context, graphics: &mut G2d, glyphs: &mut Glyphs) {
         for object in &self.objects {
-            object.draw(transform, graphics);
+            object.draw(context, graphics, glyphs);
         }
     }
 

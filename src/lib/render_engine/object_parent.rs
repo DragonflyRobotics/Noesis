@@ -1,4 +1,4 @@
-use piston_window::{G2d, Glyphs, math, PistonWindow, TextureSettings, Transformed};
+use piston_window::{clear, Context, G2d, Glyphs, math, PistonWindow, text, TextureSettings, Transformed};
 use piston_window::rectangle;
 use crate::render_engine::box_object::Box;
 use crate::render_engine::circle_object::Circle;
@@ -11,16 +11,16 @@ pub enum ObjectTypes {
 }
 
 impl ObjectTypes {
-    pub fn draw(&self, transform: &math::Matrix2d, graphics: &mut G2d, glyphs: &mut Glyphs) {
+    pub fn draw(&self, context: &Context, graphics: &mut G2d, glyphs: &mut Glyphs) {
         match self {
             ObjectTypes::Box(box_object) => {
-                box_object.draw(transform, graphics);
+                box_object.draw(context, graphics, glyphs);
             },
             ObjectTypes::Circle(circle_object) => {
-                circle_object.draw(transform, graphics);
+                circle_object.draw(context, graphics, glyphs);
             }
             ObjectTypes::Text(text_object) => {
-                text_object.draw(transform, graphics);
+                text_object.draw(context, graphics, glyphs);
             }
         }
     }
@@ -41,15 +41,15 @@ impl ObjectTypes {
 }
 
 pub trait Object {
-    fn draw(&self, transform: &math::Matrix2d, graphics: &mut G2d);
+    fn draw(&self, context: &Context, graphics: &mut G2d, glyphs: &mut Glyphs);
     fn step(&mut self, dt: f64);
 }
 
 impl Object for Box {
-    fn draw(&self, transform: &math::Matrix2d, graphics: &mut G2d) {
+    fn draw(&self, context: &Context, graphics: &mut G2d, glyphs: &mut Glyphs) {
         rectangle(self.color, // red
                   [self.x, self.y, self.width, self.height],
-                  *transform,
+                  context.transform,
                   graphics);
     }
 
@@ -59,10 +59,10 @@ impl Object for Box {
 }
 
 impl Object for Circle {
-    fn draw(&self, transform: &math::Matrix2d, graphics: &mut G2d) {
+    fn draw(&self, context: &Context, graphics: &mut G2d, glyphs: &mut Glyphs) {
         piston_window::ellipse(self.color, // red
                   [self.x, self.y, self.radius, self.radius],
-                  *transform,
+                  context.transform,
                   graphics);
     }
 
@@ -72,14 +72,13 @@ impl Object for Circle {
 }
 
 impl Object for Text {
-    fn draw(&self, transform: &math::Matrix2d, graphics: &mut G2d) {
-        // piston_window::text::Text::new_color(self.color, self.size as u32).draw(
-        //     &self.text,
-        //     &glyphs,
-        //     &piston_window::draw_state::DrawState::default(),
-        //     transform.trans(self.position[0], self.position[1]),
-        //     graphics
-        // );
+    fn draw(&self, context: &Context, graphics: &mut G2d, glyphs: &mut Glyphs) {
+        let transform = context.transform.trans(self.x, self.y);
+        text::Text::new_color(self.color, self.size).draw(
+            self.text.as_str(),
+            glyphs,
+            &context.draw_state,
+            transform, graphics).expect("TODO: panic message");
     }
 
     fn step(&mut self, dt: f64) {

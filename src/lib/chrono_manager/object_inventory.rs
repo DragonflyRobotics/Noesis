@@ -1,6 +1,5 @@
-use piston_window::{Context, G2d, Glyphs, math};
-use crate::render_engine::{Object, ObjectTypes};
-use crate::render_engine::ObjectTypes::Text;
+use piston_window::{Context, G2d, Glyphs};
+use crate::render_engine::ObjectTypes;
 
 pub struct ObjectInventory {
     pub(crate) objects: Vec<ObjectTypes>
@@ -31,6 +30,38 @@ impl ObjectInventory {
 
     pub fn get(&mut self, at: usize)  -> &mut ObjectTypes {
         return &mut self.objects[at];
+    }
+
+    // check for collisions in all the objects without any other collisions function in the objects
+    pub fn check_collisions(&self) {
+        for i in 0..self.objects.len() {
+            for j in i+1..self.objects.len() {
+                let obj1 = &self.objects[i];
+                let obj2 = &self.objects[j];
+
+                match (obj1, obj2) {
+                    (ObjectTypes::Box(box1), ObjectTypes::Box(box2)) => {
+                        if box1.x < box2.x + box2.width &&
+                            box1.x + box1.width > box2.x &&
+                            box1.y < box2.y + box2.height &&
+                            box1.y + box1.height > box2.y {
+                                println!("Collision detected between box {} and box {}", i, j);
+                        }
+                    },
+                    // Add more cases for other object types
+                    (ObjectTypes::Circle(circle1), ObjectTypes::Circle(circle2)) => {
+                        let dx = circle1.x - circle2.x;
+                        let dy = circle1.y - circle2.y;
+                        let distance = (dx*dx + dy*dy).sqrt();
+
+                        if distance < circle1.radius + circle2.radius {
+                            println!("Collision detected between circle {} and circle {}", i, j);
+                        }
+                    },
+                    _ => {}
+                }
+            }
+        }
     }
 }
 

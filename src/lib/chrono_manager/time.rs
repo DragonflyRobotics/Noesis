@@ -11,7 +11,7 @@ pub struct Time {
 impl Time {
     pub fn new(sim_speed: f64, objects: ObjectInventory, screen_width: f64, screen_height: f64) -> Time {
         let mut obj = ObjectInventory{ objects: vec![] };
-        let mut text1 = Text {
+        let text1 = Text {
             x: screen_width * 0.87,
             y: screen_height,
             text: String::from("Hello World"),

@@ -1,5 +1,3 @@
-use piston_window::{Glyphs, PistonWindow};
-
 pub struct Text {
     pub text: String,
     pub color: [f32; 4],
@@ -9,6 +7,6 @@ pub struct Text {
 }
 
 impl Text {
-    pub fn step(&mut self, dt: f64) {
+    pub fn step(&mut self, _dt: f64) {
     }
 }

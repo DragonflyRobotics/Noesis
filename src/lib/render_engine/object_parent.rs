@@ -1,4 +1,4 @@
-use piston_window::{clear, Context, G2d, Glyphs, math, PistonWindow, text, TextureSettings, Transformed};
+use piston_window::{Context, G2d, Glyphs, text, Transformed};
 use piston_window::rectangle;
 use crate::render_engine::box_object::Box;
 use crate::render_engine::circle_object::Circle;
@@ -46,7 +46,7 @@ pub trait Object {
 }
 
 impl Object for Box {
-    fn draw(&self, context: &Context, graphics: &mut G2d, glyphs: &mut Glyphs) {
+    fn draw(&self, context: &Context, graphics: &mut G2d, _glyphs: &mut Glyphs) {
         rectangle(self.color, // red
                   [self.x, self.y, self.width, self.height],
                   context.transform,
@@ -59,7 +59,7 @@ impl Object for Box {
 }
 
 impl Object for Circle {
-    fn draw(&self, context: &Context, graphics: &mut G2d, glyphs: &mut Glyphs) {
+    fn draw(&self, context: &Context, graphics: &mut G2d, _glyphs: &mut Glyphs) {
         piston_window::ellipse(self.color, // red
                   [self.x, self.y, self.radius, self.radius],
                   context.transform,

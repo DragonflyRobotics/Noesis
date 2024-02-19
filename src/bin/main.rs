@@ -3,13 +3,12 @@ extern crate quantx;
 extern crate piston_window;
 
 use quantx::chrono_manager::Time;
-use std::{thread, time};
 use std::time as stdtime;
 use piston_window::*;
 use quantx::chrono_manager::ObjectInventory;
 
-use crate::quantx::render_engine::{Object, ObjectTypes};
-use crate::quantx::render_engine::{Box, Circle, Text};
+use crate::quantx::render_engine::ObjectTypes;
+use crate::quantx::render_engine::{Box, Circle};
 
 
 fn main() {
@@ -26,23 +25,40 @@ fn main() {
         window.create_texture_context(),
         TextureSettings::new(),
     ).unwrap();
-    let box1 = Box {
-        width: 100.0,
-        height: 100.0,
+    // let box1 = Box {
+    //     width: 100.0,
+    //     height: 100.0,
+    //     x: 0.0,
+    //     y: 0.0,
+    //     color: [1.0, 0.0, 0.0, 1.0],
+    //     velocity: 10.0
+    // };
+    // let box2 = Box {
+    //     width: 100.0,
+    //     height: 100.0,
+    //     x: 0.0,
+    //     y: 200.0,
+    //     color: [1.0, 0.0, 0.0, 1.0],
+    //     velocity: 5.0
+    // };
+    let circle1 = Circle {
         x: 0.0,
         y: 0.0,
-        color: [1.0, 0.0, 0.0, 1.0]
-    };
-    let mut circle1 = Circle {
-        x: 0.0,
-        y: 100.0,
         radius: 100.0,
-        color: [1.0, 0.0, 0.0, 1.0]
+        color: [1.0, 0.0, 0.0, 1.0],
+        velocity: 10.0
+    };
+    let circle2 = Circle {
+        x: 0.0,
+        y: 200.0,
+        radius: 100.0,
+        color: [1.0, 0.0, 0.0, 1.0],
+        velocity: 5.0
     };
     let mut objects: ObjectInventory = ObjectInventory::new();
-    objects.add_object(ObjectTypes::Box(box1));
     objects.add_object(ObjectTypes::Circle(circle1));
-    let mut time = Time::new(1.0, objects, 640.0, 480.0);
+    objects.add_object(ObjectTypes::Circle(circle2));
+    let mut time = Time::new(1.0/8.0, objects, 640.0, 480.0);
     let mut tic = stdtime::Instant::now();
     while let Some(event) = window.next() {
         window.draw_2d(&event, |context, graphics, _device| {
@@ -50,10 +66,8 @@ fn main() {
             time.objects.draw(&context, graphics, &mut glyphs);
             glyphs.factory.encoder.flush(_device);
         });
-        if (tic.elapsed() >= stdtime::Duration::from_millis(1)) {
-            time.step(0.001);
-            tic = stdtime::Instant::now();
-        }
-        println!("{:?}", tic.elapsed());
+        time.step(tic.elapsed().as_secs_f64());
+        tic = stdtime::Instant::now();
+        time.objects.check_collisions();
     }
 }
